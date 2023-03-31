@@ -1,3 +1,4 @@
+# Global registry of all in-mem filesystems.
 registry = {}
 
 
