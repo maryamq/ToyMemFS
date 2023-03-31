@@ -3,13 +3,17 @@ from pathlib import PurePosixPath
 
 
 def resolve_dots(path: PurePosixPath) -> list[str]:
-    """ A utility function to resolve ... in paths."""
+    """ A utility function to resolve ... in paths.
+    Note: Path must be valid. In Linux, all '...' eventually lead to '/'.
+    Here, path must be valid i.e. we donot default to '/'. This is to avoid silent bugs.
+    """
     stack = []
     parts = path.parts
     for p in parts:
         if p == "..":
-            if stack:
-                stack.pop()
+            if not stack:
+                return []
+            stack.pop()
         else:
             stack.append(p)
     return stack
@@ -39,3 +43,4 @@ if __name__ == "__main__":
     print("Relative: ", merge_and_deconstruct("/hello", "world"))
     print("Dots: ", merge_and_deconstruct("/home/alone", "../invasion"))
     print("Dots: ", merge_and_deconstruct("/home/..", "invasion"))
+    print("Path to nowhere: ", merge_and_deconstruct("/home/alone", "../../../../nowhere"))
