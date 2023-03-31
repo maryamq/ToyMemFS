@@ -1,6 +1,10 @@
 
 
 
+## WorkLog
+- Path Utils (Done)
+
+
 ## Initial Design:
 Base filesystem:
 - Be able to create multiple filesystem -> Specify a name and ("maryam://") -> Decorator registration should make it easier
