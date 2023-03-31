@@ -15,9 +15,13 @@ def resolve_dots(path: PurePosixPath) -> list[str]:
     return stack
 
 
-def merge_and_deconstruct(base: str, path_str: str) -> list[str]:
-    """ Helper function to merge paths. Returns a list of path parts. """
-    base_path = PurePosixPath(base)
+def merge_and_deconstruct(abs_base_path: str, path_str: str) -> list[str]:
+    """ Helper function to merge paths. Returns a list of path parts.
+    Arguments:
+    abs_base_path: string path for a base directory such as present working directory. Must be absolute. 
+    path_str: string path for a resource. Can be relative or absolute.
+    """
+    base_path = PurePosixPath(abs_base_path)
     incr_path = PurePosixPath(path_str)
     # case 1: absolute path. Ingore base filepath.
     if incr_path.is_absolute():
