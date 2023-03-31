@@ -1,9 +1,18 @@
 
+## Key Design:
+### Virtual Drives:
+
+### Supported Paths
+
+
 
 
 ## WorkLog
+05/31:
 - Path Utils (Done)
-
+- Some Basic Registration for virtual drives. 
+- An env class for managing state. 
+- A base class for all types of file objects.
 
 ## Initial Design:
 Base filesystem:

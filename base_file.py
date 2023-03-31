@@ -7,7 +7,8 @@ from abc import ABC, abstractmethod
 
 class FileType(Enum):
     """ Types of files supported by this filesystem. 
-        TODO(maryamq): Switch to a decorator registration pattern if time. This is clunky.
+        TODO(maryamq): Switch to a decorator registration pattern if time. 
+        This is clunky. Ideally, we should be able to add new filetypes without modifying this file. 
     """
     DIR = 0  # Directory. Contains other files.
     CONTENT_FILE = 1  # File with content.
