@@ -2,6 +2,7 @@
 """
 from collections import namedtuple
 import sys
+import path_utils
 
 
 class FileReturnCodes:
@@ -30,7 +31,21 @@ class FileReturnCodes:
           return_code: int to represent a error code. 
           kwargs: string key-value args to populate the error template.
         """
-        print(FileReturnCodes._error_tmpl[return_code].format(**kwargs).strip())
+        print(FileReturnCodes._error_tmpl[return_code].format(
+            **kwargs).strip())
+
+
+class ArgValidators:
+    """ Utility class for validating arguments.
+    """
+    @classmethod
+    def get_min_max_fn(cls, min_value, max_value):
+        """ Returns true if number of arguments are within min/max range.
+        """
+        def fn(command_arr: list[str]) -> bool:
+            arg_len = len(command_arr)
+            return arg_len >= min_value and arg_len <= max_value
+        return fn
 
 
 class CommandValidator:
@@ -40,14 +55,14 @@ class CommandValidator:
     """
     # Config tuple.
     Command = namedtuple("Command", [
-                         'name', 'min_args', 'max_args', 'valid_arg_names', 'description', 'usage'])
+                         'name', 'validators_fns', 'description', 'usage'])
     """ Simple tuple to store command meta-data for validation. This can be useful if validation becomes more complex."""
     commands = {
-        "ls": Command(name="ls", min_args=0, max_args=1, description="Lists all files in the current or specified directory.", usage="ls <enter> or ls <path>", valid_arg_names=None),
-        "mkdir": Command(name="mkdir", min_args=1, max_args=1, description="Creates a new directory.", usage="mkdir <path>", valid_arg_names=None),
-        "pwd": Command(name="pwd", min_args=0, max_args=0, description="Prints the present working directory.", usage="pwd <enter>", valid_arg_names=None),
-        "cd": Command(name="cd", min_args=1, max_args=1, description="Change present working directory.", usage="cd <dir>", valid_arg_names=None),
-        "help": Command(name="help", min_args=0, max_args=1, description="Get Help.", usage="help <enter> or help <command>", valid_arg_names=None),
+        "ls": Command(name="ls", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=2)], description="Lists all files in the current or specified directory.", usage="ls <enter> or ls <path>"),
+        "mkdir": Command(name="mkdir", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a new directory.", usage="mkdir <path>"),
+        "pwd": Command(name="pwd", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=1)], description="Prints the present working directory.", usage="pwd <enter>"),
+        "cd": Command(name="cd", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Change present working directory.", usage="cd <dir>"),
+        "help": Command(name="help", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=2)], description="Get Help.", usage="help <enter> or help <command>"),
     }
     _UNKNOWN_COMMAND = "Unknown Command. Type help for a complete list."
 
@@ -62,10 +77,10 @@ class CommandValidator:
         if cmd not in CommandValidator.commands:
             return False, CommandValidator._UNKNOWN_COMMAND
         cmd_config = CommandValidator.commands[cmd]
-        # One entry is the command itself. Exclude it.
-        arg_len = len(command_arr) - 1
-        if arg_len < cmd_config.min_args or arg_len > cmd_config.max_args:
-            return False, cmd_config.usage
+        # Iterate through validators.
+        for valid_fn in cmd_config.validators_fns:
+            if not valid_fn(command_arr):
+                return False, cmd_config.usage
         return True, ""
 
     @classmethod
