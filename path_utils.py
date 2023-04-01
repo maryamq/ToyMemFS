@@ -43,4 +43,5 @@ if __name__ == "__main__":
     print("Relative: ", merge_and_deconstruct("/hello", "world"))
     print("Dots: ", merge_and_deconstruct("/home/alone", "../invasion"))
     print("Dots: ", merge_and_deconstruct("/home/..", "invasion"))
-    print("Path to nowhere: ", merge_and_deconstruct("/home/alone", "../../../../nowhere"))
+    print("Path to nowhere: ", merge_and_deconstruct(
+        "/home/alone", "../../../../nowhere"))

@@ -69,6 +69,7 @@ class CommandValidator:
         "pwd": Command(name="pwd", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=1)], description="Prints the present working directory.", usage="pwd <enter>"),
         "cd": Command(name="cd", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Change present working directory.", usage="cd <dir>"),
         "help": Command(name="help", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=2)], description="Get Help.", usage="help <enter> or help <command>"),
+        "sys": Command(name="sys", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=1)], description="Prints out all files in the drive. ", usage="sys <enter>"), 
     }
     _UNKNOWN_COMMAND = "Unknown Command. Type help for a complete list."
 
