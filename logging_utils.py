@@ -30,7 +30,7 @@ class FileReturnCodes:
           return_code: int to represent a error code. 
           kwargs: string key-value args to populate the error template.
         """
-        print(FileReturnCodes._error_tmpl[return_code].format(**kwargs).trim())
+        print(FileReturnCodes._error_tmpl[return_code].format(**kwargs).strip())
 
 
 class CommandValidator:
