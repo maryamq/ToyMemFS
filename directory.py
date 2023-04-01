@@ -15,11 +15,6 @@ class Directory(BaseFile):
     def is_empty(self):
         return len(self._children) == 0
 
-    def delete(self) -> int:
-        if not self.parent:
-            return FileReturnCodes.DELETE_FAILED
-        return self.parent.remove_child(self.name)
-
     def has_child(self, child: str, type=None) -> bool:
         has_child = child and child in self._children
         if type:
@@ -29,7 +24,7 @@ class Directory(BaseFile):
     def get_child(self, child: str):
         return self._children[child]
 
-    def add_new_child(self, child: BaseFile):
+    def add_content(self, child: BaseFile, **kwargs):
         if self.has_child(child.name):
             return FileReturnCodes.ALREADY_EXIST
         self._children[child.name] = child
@@ -69,14 +64,14 @@ class Directory(BaseFile):
 #  TODO(maryamq): Testing code. Delete it later.
 if __name__ == "__main__":
     dir = Directory("/")
-    dir.add_new_child(Directory("Hello"))
-    dir.add_new_child(Directory("World"))
+    dir.add_content(Directory("Hello"))
+    dir.add_content(Directory("World"))
     print(dir)
     print(dir.list_all(level=5))
     print("Existing child: This should fail: ",
-          dir.add_new_child(Directory("Hello")))
+          dir.add_content(Directory("Hello")))
     print("Checking for children : Should exist",
           dir.has_child("Hello", FileType.DIR))
     print("Checking for child with type : Should be false",
-          dir.has_child("Hello", FileType.CONTENT_FILE))
+          dir.has_child("Hello", FileType.TEXT_FILE))
     print("Absolute path: ", dir.get_child("Hello").absolute_path)

@@ -16,13 +16,15 @@ class FileReturnCodes:
     CREATION_SUCCESSFUL = 2
     INVALID_PATH = 3
     DELETE_FAILED = 4
+    UNSUPPORTED = 5
 
     # Error templates.
     _error_tmpl = {
         SUCCESS: "{success_msg} {name}",
         ALREADY_EXIST: "{err_msg}: Already Exists: {name}",
         INVALID_PATH: "{err_msg}: Invalid path: {name} ",
-        DELETE_FAILED: "{err_msg}: Deletion Failed. {name}}"
+        DELETE_FAILED: "{err_msg}: Deletion Failed. {name}}",
+        UNSUPPORTED: "{err_msg}: UnSupported. {name}"
     }
 
     @classmethod
@@ -53,13 +55,14 @@ class ArgValidators:
     This can be extended to support additional validations.
     """
     @classmethod
-    def get_min_max_fn(cls, min_value, max_value):
+    def get_min_max_fn(cls, *, min_value=None, max_value=None):
         """ Returns true if number of arguments are within min/max range.
         """
-        def fn(command_arr: list[str]) -> bool:
+        def min_max_fn(command_arr: list[str]) -> bool:
             arg_len = len(command_arr)
-            return arg_len >= min_value and arg_len <= max_value
-        return fn
+            return (not min_value or arg_len >= min_value) and (not max_value or arg_len <= max_value)
+        return min_max_fn
+    
 
 
 class CommandValidator:
@@ -80,6 +83,9 @@ class CommandValidator:
     commands = {
         "ls": Command(name="ls", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=2)], description="Lists all files in the current or specified directory.", usage="ls <enter> or ls <path>"),
         "mkdir": Command(name="mkdir", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a new directory.", usage="mkdir <path>"),
+        "mkfile": Command(name="mkfile", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a text file.", usage="mkfile <path>"), 
+        "write": Command(name="write", validators_fns=[ArgValidators.get_min_max_fn(min_value=3, max_value=None)], description="Append or overwrite to an existing file.", usage="write <path> [-a] 'content'"), 
+        "cat": Command(name="cat", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Output file content.", usage="cat <path>"), 
         "rm": Command(name="rm", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Removes a file or directory. Directories must be empty.", usage="rm <path>"),
         "pwd": Command(name="pwd", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=1)], description="Prints the present working directory.", usage="pwd <enter>"),
         "cd": Command(name="cd", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Change present working directory.", usage="cd <dir>"),

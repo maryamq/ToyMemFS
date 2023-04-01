@@ -1,6 +1,6 @@
 import os
 import virtual_mem_drive_registry
-from mem_fs import MemFileSystem
+from mem_fs import MemFileSystem, FileType
 from environment import Environment
 from logging_utils import FileReturnCodes, CommandValidator
 
@@ -28,7 +28,8 @@ if __name__ == "__main__":
         # Catch Errors early.
         valid_cmd_syntax, msg = CommandValidator.validate(comps)
         if not valid_cmd_syntax:
-            print(f"Error: {msg}")
+            print(comps)
+            print(f"Invalid Command: {msg}")
             continue
 
         command = comps[0]
@@ -50,13 +51,33 @@ if __name__ == "__main__":
                 env.present_working_dir = valid_dir
             FileReturnCodes.print_message(ret, name=comps[1])
         elif command == "mkdir":
-            ret = env.current_drive.make_dir(env.present_working_dir, comps[1])
+            ret = env.current_drive.make_file(env.present_working_dir, comps[1], FileType.DIR)
             FileReturnCodes.print_message(ret, name=comps[1], success_msg="Created ")
         elif command == "rm":
             dir_obj, ret = env.current_drive.get_file(env.present_working_dir, comps[1])
             if ret == FileReturnCodes.SUCCESS:
                 dir_obj.delete()
             FileReturnCodes.print_message(ret, name=comps[1], success_msg="Deleted ")
+        elif command == "mkfile":
+            ret = env.current_drive.make_file(env.present_working_dir, comps[1], FileType.TEXT_FILE)
+            FileReturnCodes.print_message(ret, name=comps[1], success_msg="Created ")
+        elif command == "write":
+            path = comps[1]
+            mode = "overwrite"
+            content_idx = 2
+            if len(comps) > 3 and comps[2] in ["-a"]:
+                mode =  "append"
+                content_idx += 1
+            content = " ".join(comps[content_idx:])
+            file, ret = env.current_drive.get_file(env.present_working_dir, path, type=FileType.TEXT_FILE)
+            if ret == FileReturnCodes.SUCCESS:
+                file.add_content(content, write_mode=mode)
+            FileReturnCodes.print_message(ret, name=comps[1])
+        elif command == "cat":
+            file, ret = env.current_drive.get_file(env.present_working_dir, comps[1], type=FileType.TEXT_FILE)
+            FileReturnCodes.print_message(ret, name=comps[1], success_msg="Content For ")
+            if ret == FileReturnCodes.SUCCESS:
+                print(file)
 
         # ****************Commands for Managing a new FS.************n
         elif command == "new":

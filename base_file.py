@@ -3,6 +3,7 @@
 from abc import abstractmethod
 from enum import Enum
 from abc import ABC, abstractmethod
+from logging_utils import FileReturnCodes
 
 
 class FileType(Enum):
@@ -10,8 +11,9 @@ class FileType(Enum):
         TODO(maryamq): Switch to a decorator registration pattern if time. 
         This is clunky. Ideally, we should be able to add new filetypes without modifying this file. 
     """
-    DIR = 0  # Directory. Contains other files.
-    CONTENT_FILE = 1  # File with content.
+    UNKNOWN = 0  # Unknown file.
+    DIR = 1  # Directory. Contains other files.
+    TEXT_FILE = 2   # File with text content
 
 
 class BaseFile(ABC):
@@ -48,6 +50,11 @@ class BaseFile(ABC):
     def parent(self, new_parent):
         self._parent = new_parent
 
+    def delete(self) -> int:
+        if not self.parent:
+            return FileReturnCodes.DELETE_FAILED
+        return self.parent.remove_child(self.name)
+
     @property
     def absolute_path(self):
         """ Helper function to generate the absolute path."""
@@ -65,4 +72,8 @@ class BaseFile(ABC):
 
     @abstractmethod
     def __iter__(self):
+        pass
+
+    @abstractmethod
+    def add_content(self, content, **kwargs):
         pass

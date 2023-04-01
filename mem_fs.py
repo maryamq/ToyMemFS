@@ -2,6 +2,7 @@ from io import StringIO
 from base_file import BaseFile, FileType
 from virtual_mem_drive_registry import VirtualMemDriveRegistry
 from directory import Directory
+from content_files import TextFile
 from logging_utils import FileReturnCodes, DebugLogger
 import path_utils
 
@@ -29,7 +30,7 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
             return None, FileReturnCodes.INVALID_PATH
         return base_dir, FileReturnCodes.SUCCESS
 
-    def get_file(self, working_dir: Directory, input_path: str) -> tuple[BaseFile, int]:
+    def get_file(self, working_dir: Directory, input_path: str, type=FileType.UNKNOWN) -> tuple[BaseFile, int]:
         self._logger("Getting File: ", input_path)
         base_dir, unmatched = self.get_valid_dir(working_dir, input_path)
         self._logger("base_dir, unmatched: ", base_dir, unmatched)
@@ -38,7 +39,9 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
                 # Delete the file directly.
                 return base_dir, FileReturnCodes.SUCCESS
             elif base_dir.has_child(unmatched[0]):
-                return base_dir.get_child(unmatched[0]), FileReturnCodes.SUCCESS
+                selected_file = base_dir.get_child(unmatched[0])
+                if type != FileType.UNKNOWN and selected_file.type == type:
+                    return selected_file, FileReturnCodes.SUCCESS
         return None, FileReturnCodes.INVALID_PATH
 
     def get_valid_dir(self, working_dir: Directory, input_path: str):
@@ -62,15 +65,22 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
                 break
         return cur_dir, path_parts[parts_idx:]
 
-    def make_dir(self, working_dir: Directory, new_dir_path: str) -> FileReturnCodes:
+    def make_file(self, working_dir: Directory, new_dir_path: str, file_type:int) -> FileReturnCodes:
         valid_base_dir, unmatched_dir = self.get_valid_dir(
             working_dir, new_dir_path)
         if len(unmatched_dir) != 1 or not unmatched_dir[0]:
             return FileReturnCodes.INVALID_PATH
-        dir_name = unmatched_dir[0]
+        file_name = unmatched_dir[0]
         self._logger(
-            f"Attempting to create dir {dir_name} in {valid_base_dir.absolute_path}")
-        return valid_base_dir.add_new_child(Directory(dir_name))
+            f"Attempting to create file '{file_name}' in {valid_base_dir.absolute_path}")
+        if file_type == FileType.DIR:
+            return valid_base_dir.add_content(Directory(file_name))
+        elif file_type == FileType.TEXT_FILE:
+            return valid_base_dir.add_content(TextFile(file_name, parent=valid_base_dir))
+        else:
+            return FileReturnCodes.UNSUPPORTED
+
+    
 
     def list_all(self, base_dir: Directory, file_path=None):
         if file_path:
@@ -100,11 +110,16 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
 
 if __name__ == "__main__":
     fs = MemFileSystem("test")
-    print(fs.make_dir(fs.root, "hello"))
-    print(fs.make_dir(fs.root, "movie"))
-    print(fs.make_dir(fs.root, "tv"))
+    print(fs.make_file(fs.root, "hello", FileType.DIR))
+    print(fs.make_file(fs.root, "movie",  FileType.DIR))
+    print(fs.make_file(fs.root, "tv",  FileType.DIR))
     print(fs.list_all(fs.root))
-    print(fs.make_dir(fs.root, "/movie/disney"))
-    print(fs.make_dir(fs.root, "/movie/paramount"))
+    print(fs.make_file(fs.root, "/movie/disney",  FileType.DIR))
+    print(fs.make_file(fs.root, "/movie/paramount",  FileType.DIR))
     print(fs.get_dir(fs.root, "/movie/disney"))
-    print(fs)
+    # file writing test:
+    print(fs.make_file(fs.root, "hello.txt", FileType.TEXT_FILE))
+    text_file, err_code = fs.get_file(fs.root, "hello.txt")
+    print(text_file, err_code)
+    text_file.add_content("hello world")
+    print(text_file)
