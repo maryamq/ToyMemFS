@@ -3,7 +3,7 @@
 from abc import abstractmethod
 from enum import Enum
 from abc import ABC, abstractmethod
-from logging_utils import FileReturnCodes
+from file_return_codes import FileReturnCodes
 
 
 class FileType(Enum):
@@ -51,13 +51,14 @@ class BaseFile(ABC):
         self._parent = new_parent
 
     def delete(self) -> int:
-        if not self.parent:
+        """ Deletes the file. """
+        if not self.parent:  # ROOT should not be deleted.
             return FileReturnCodes.DELETE_FAILED
         return self.parent.remove_child(self.name)
 
     @property
     def absolute_path(self):
-        """ Helper function to generate the absolute path."""
+        """ Helper function to generate the absolute path from root.."""
         # TODO(maryamq): Really should cache this (p1). We call this frequently but it is not an issue right now with a toy setup.
         path_sep = "/"
         components = []

@@ -2,8 +2,8 @@ import os
 import virtual_mem_drive_registry
 from mem_fs import MemFileSystem, FileType
 from environment import Environment
-from logging_utils import FileReturnCodes, CommandValidator
-
+from logging_utils import CommandValidator
+from file_return_codes import FileReturnCodes
 
 def exit():
     print("GoodBye!")

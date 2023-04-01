@@ -1,7 +1,7 @@
 from io import StringIO
 from base_file import FileType, BaseFile
 from directory import Directory
-from logging_utils import FileReturnCodes
+from file_return_codes import FileReturnCodes
 
 
 class TextFile(BaseFile):

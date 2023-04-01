@@ -2,7 +2,6 @@
 """
 from collections import namedtuple
 import sys
-import path_utils
 
 
 class FileReturnCodes:
@@ -62,7 +61,6 @@ class ArgValidators:
             arg_len = len(command_arr)
             return (not min_value or arg_len >= min_value) and (not max_value or arg_len <= max_value)
         return min_max_fn
-    
 
 
 class CommandValidator:
@@ -83,9 +81,9 @@ class CommandValidator:
     commands = {
         "ls": Command(name="ls", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=2)], description="Lists all files in the current or specified directory.", usage="ls <enter> or ls <path>"),
         "mkdir": Command(name="mkdir", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a new directory.", usage="mkdir <path>"),
-        "mkfile": Command(name="mkfile", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a text file.", usage="mkfile <path>"), 
-        "write": Command(name="write", validators_fns=[ArgValidators.get_min_max_fn(min_value=3, max_value=None)], description="Append or overwrite to an existing file.", usage="write <path> [-a] 'content'"), 
-        "cat": Command(name="cat", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Output file content.", usage="cat <path>"), 
+        "mkfile": Command(name="mkfile", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a text file.", usage="mkfile <path>"),
+        "write": Command(name="write", validators_fns=[ArgValidators.get_min_max_fn(min_value=3, max_value=None)], description="Append or overwrite to an existing file.", usage="write <path> [-a] 'content'"),
+        "cat": Command(name="cat", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Output file content.", usage="cat <path>"),
         "rm": Command(name="rm", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Removes a file or directory. Directories must be empty.", usage="rm <path>"),
         "pwd": Command(name="pwd", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=1)], description="Prints the present working directory.", usage="pwd <enter>"),
         "cd": Command(name="cd", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Change present working directory.", usage="cd <dir>"),
@@ -164,4 +162,4 @@ if __name__ == "__main__":
     print(CommandValidator.help("ls"))
     log = DebugLogger.get_logger_fn("test")
     log("Logging")
-    print(FileReturnCodes.print_message(FileReturnCodes.SUCCESS, name="mar"))
+    FileReturnCodes.print_message(FileReturnCodes.SUCCESS, name="mar")

@@ -3,7 +3,8 @@ from base_file import BaseFile, FileType
 from virtual_mem_drive_registry import VirtualMemDriveRegistry
 from directory import Directory
 from content_files import TextFile
-from logging_utils import FileReturnCodes, DebugLogger
+from logging_utils import DebugLogger
+from file_return_codes import FileReturnCodes
 import path_utils
 
 
@@ -119,7 +120,7 @@ if __name__ == "__main__":
     print(fs.get_dir(fs.root, "/movie/disney"))
     # file writing test:
     print(fs.make_file(fs.root, "hello.txt", FileType.TEXT_FILE))
-    text_file, err_code = fs.get_file(fs.root, "hello.txt")
+    text_file, err_code = fs.get_file(fs.root, "hello.txt", FileType.TEXT_FILE)
     print(text_file, err_code)
     text_file.add_content("hello world")
     print(text_file)
