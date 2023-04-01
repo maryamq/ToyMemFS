@@ -23,11 +23,23 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
     def name(self):
         return self._name
 
-    def get_dir(self, working_dir: Directory, input_path: str) -> tuple[Directory, FileReturnCodes]:
+    def get_dir(self, working_dir: Directory, input_path: str) -> tuple[Directory, int]:
         base_dir, unmatched = self.get_valid_dir(working_dir, input_path)
         if unmatched:
             return None, FileReturnCodes.INVALID_PATH
         return base_dir, FileReturnCodes.SUCCESS
+
+    def get_file(self, working_dir: Directory, input_path: str) -> tuple[BaseFile, int]:
+        self._logger("Getting File: ", input_path)
+        base_dir, unmatched = self.get_valid_dir(working_dir, input_path)
+        self._logger("base_dir, unmatched: ", base_dir, unmatched)
+        if base_dir and len(unmatched) < 2:
+            if not unmatched:
+                # Delete the file directly.
+                return base_dir, FileReturnCodes.SUCCESS
+            elif base_dir.has_child(unmatched[0]):
+                return base_dir.get_child(unmatched[0]), FileReturnCodes.SUCCESS
+        return None, FileReturnCodes.INVALID_PATH
 
     def get_valid_dir(self, working_dir: Directory, input_path: str):
         """ This function encapsulate all the complexities of resolving base directory.

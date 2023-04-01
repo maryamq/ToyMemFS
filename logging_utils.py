@@ -15,14 +15,25 @@ class FileReturnCodes:
     ALREADY_EXIST = 1
     CREATION_SUCCESSFUL = 2
     INVALID_PATH = 3
+    DELETE_FAILED = 4
 
     # Error templates.
     _error_tmpl = {
-        SUCCESS: "Success! {message} {name}",
-        CREATION_SUCCESSFUL: "Creation Successful: {name}",
-        ALREADY_EXIST: "Error: Already Exists: {name}",
-        INVALID_PATH: "Error: Invalid path: {name} ",
+        SUCCESS: "{success_msg} {name}",
+        ALREADY_EXIST: "{err_msg}: Already Exists: {name}",
+        INVALID_PATH: "{err_msg}: Invalid path: {name} ",
+        DELETE_FAILED: "{err_msg}: Deletion Failed. {name}}"
     }
+
+    @classmethod
+    def _get_default_tmpl_param_names(cls):
+        """ Returns the defaults value for template params.
+        """
+        return {
+            "success_msg": "Success! ",
+            "err_msg": "Error! ",
+            "name": "",
+        }
 
     @classmethod
     def print_message(cls, return_code, **kwargs) -> str:
@@ -31,12 +42,15 @@ class FileReturnCodes:
           return_code: int to represent a error code. 
           kwargs: string key-value args to populate the error template.
         """
+        dict_args = FileReturnCodes._get_default_tmpl_param_names()
+        dict_args.update(kwargs)
         print(FileReturnCodes._error_tmpl[return_code].format(
-            **kwargs).strip())
+            **dict_args).strip())
 
 
 class ArgValidators:
-    """ Utility class for validating arguments.
+    """ Utility class for validating arguments. 
+    This can be extended to support additional validations.
     """
     @classmethod
     def get_min_max_fn(cls, min_value, max_value):
@@ -66,10 +80,11 @@ class CommandValidator:
     commands = {
         "ls": Command(name="ls", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=2)], description="Lists all files in the current or specified directory.", usage="ls <enter> or ls <path>"),
         "mkdir": Command(name="mkdir", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a new directory.", usage="mkdir <path>"),
+        "rm": Command(name="rm", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Removes a file or directory. Directories must be empty.", usage="rm <path>"),
         "pwd": Command(name="pwd", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=1)], description="Prints the present working directory.", usage="pwd <enter>"),
         "cd": Command(name="cd", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Change present working directory.", usage="cd <dir>"),
         "help": Command(name="help", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=2)], description="Get Help.", usage="help <enter> or help <command>"),
-        "sys": Command(name="sys", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=1)], description="Prints out all files in the drive. ", usage="sys <enter>"), 
+        "sys": Command(name="sys", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=1)], description="Prints out all files in the drive. ", usage="sys <enter>"),
     }
     _UNKNOWN_COMMAND = "Unknown Command. Type help for a complete list."
 
@@ -126,9 +141,11 @@ class DebugLogger:
         Arguments:
         src_prefix: This string will be prefixed to all output to identify the source of the message.
         """
+        prefix = f"{src_prefix}: "
+
         def log_print(*args):
             if DebugLogger.log_out:
-                print(*args, file=DebugLogger.log_out)
+                print(prefix, *args, file=DebugLogger.log_out)
         return log_print
 
 
@@ -141,3 +158,4 @@ if __name__ == "__main__":
     print(CommandValidator.help("ls"))
     log = DebugLogger.get_logger_fn("test")
     log("Logging")
+    print(FileReturnCodes.print_message(FileReturnCodes.SUCCESS, name="mar"))

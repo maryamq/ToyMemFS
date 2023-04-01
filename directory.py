@@ -15,6 +15,11 @@ class Directory(BaseFile):
     def is_empty(self):
         return len(self._children) == 0
 
+    def delete(self) -> int:
+        if not self.parent:
+            return FileReturnCodes.DELETE_FAILED
+        return self.parent.remove_child(self.name)
+
     def has_child(self, child: str, type=None) -> bool:
         has_child = child and child in self._children
         if type:
@@ -29,7 +34,7 @@ class Directory(BaseFile):
             return FileReturnCodes.ALREADY_EXIST
         self._children[child.name] = child
         child.parent = self
-        return FileReturnCodes.CREATION_SUCCESSFUL
+        return FileReturnCodes.SUCCESS
 
     def children_names(self):
         return self._children.keys()
@@ -41,7 +46,7 @@ class Directory(BaseFile):
                 return FileReturnCodes.INVALID_PATH
             del self._children[child_name]
             return FileReturnCodes.SUCCESS
-        return FileReturnCodes.INVALID_PATH
+        return FileReturnCodes.DELETE_FAILED
 
     def list_all(self, level=0) -> str:
         """ Helper function to output all children with indentation.
