@@ -54,9 +54,15 @@ class CommandValidator:
     It can be extended to support more complex validation,
     """
     # Config tuple.
+    """ Simple tuple to store command meta-data for validation. This can be useful if validation becomes more complex.
+        name: Name of the command
+        validators_fn: Array of validation functions. If any of these fns are False, then the command syntax is invalid.
+        description: Description of the command.
+        usage: A short description on how to use the command.
+        """
     Command = namedtuple("Command", [
                          'name', 'validators_fns', 'description', 'usage'])
-    """ Simple tuple to store command meta-data for validation. This can be useful if validation becomes more complex."""
+
     commands = {
         "ls": Command(name="ls", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=2)], description="Lists all files in the current or specified directory.", usage="ls <enter> or ls <path>"),
         "mkdir": Command(name="mkdir", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a new directory.", usage="mkdir <path>"),
