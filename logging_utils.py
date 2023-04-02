@@ -37,7 +37,7 @@ class CommandValidator:
     commands = {
         "ls": Command(name="ls", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=2)], description="Lists all files in the current or specified directory.", usage="ls <enter> or ls <path>"),
         "mkdir": Command(name="mkdir", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a new directory.", usage="mkdir <path>"),
-        "mkfile": Command(name="mkfile", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a text file.", usage="mkfile <path>"),
+        "mk": Command(name="mk", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a directory or a text file. Only .txt extension in supported.", usage="mk mydir or mk myfile.txt"),
         "mvfile": Command(name="mvfile", validators_fns=[ArgValidators.get_min_max_fn(min_value=3, max_value=3)], description="Moves a file to a new directory.", usage="mv <old_path> <new_path>"),
         "find": Command(name="find", validators_fns=[ArgValidators.get_min_max_fn(min_value=3, max_value=None)], description="Search for dir or in a text file.", usage="find . regex or find <path> regex. Use ^term$ for exact match."),
         "write": Command(name="write", validators_fns=[ArgValidators.get_min_max_fn(min_value=3, max_value=None)], description="Append or overwrite to an existing file.", usage="write <path> [-a] 'content'"),

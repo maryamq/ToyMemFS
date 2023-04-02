@@ -6,7 +6,7 @@ from content_files import TextFile
 from logging_utils import DebugLogger
 from file_return_codes import FileReturnCodes
 import path_utils
-
+from file_extension_registry import file_creator_factory
 
 class MemFileSystem(metaclass=VirtualMemDriveRegistry):
     ROOT_DIR = "/"
@@ -87,12 +87,10 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
         file_name = unmatched_dir[0]
         self._logger(
             f"Attempting to create file '{file_name}' in {valid_base_dir.absolute_path}")
-        if file_type == FileType.DIR:
-            return valid_base_dir.add_content(Directory(file_name))
-        elif file_type == FileType.TEXT_FILE:
-            return valid_base_dir.add_content(TextFile(file_name, parent=valid_base_dir))
-        else:
-            return FileReturnCodes.UNSUPPORTED
+        new_file, ret = file_creator_factory(file_name, parent=valid_base_dir)
+        if ret == FileReturnCodes.SUCCESS:
+            return valid_base_dir.add_content(new_file)
+        return ret
 
     def search(self, working_dir: Directory, file_path, regex):
         if not file_path or file_path == ".":
@@ -149,6 +147,7 @@ if __name__ == "__main__":
     print(fs.make_file(fs.root, "movie",  FileType.DIR))
     print(fs.list_all(fs.root))
     print(fs.make_file(fs.root, "/movie/disney",  FileType.DIR))
+    print(fs.make_file(fs.root, "hello",  FileType.DIR))
     print(fs.make_file(fs.root, "/movie/paramount",  FileType.DIR))
     print(fs.get_dir(fs.root, "/movie/disney"))
     # file writing test:
@@ -163,3 +162,4 @@ if __name__ == "__main__":
     print(fs.move_file(fs.root, "/movie/disney", "/movie/paramount"))
     print(fs)
     print("Search: ", fs.search(fs.root, "/", "dis"))
+    print(fs.make_file(fs.root, "hello.sj",  FileType.DIR))

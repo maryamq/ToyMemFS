@@ -1,8 +1,10 @@
 from base_file import FileType, BaseFile
 from file_return_codes import FileReturnCodes
 import re
+from file_extension_registry import register_file_ext
 
 
+@register_file_ext(ext="")
 class Directory(BaseFile):
     """ Represents a directory in the in memory filesystem."""
 

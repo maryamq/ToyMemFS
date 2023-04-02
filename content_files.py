@@ -5,9 +5,10 @@ from io import StringIO
 from base_file import FileType, BaseFile
 from directory import Directory
 from file_return_codes import FileReturnCodes
+from file_extension_registry import register_file_ext
 import re
 
-
+@register_file_ext(ext="txt")
 class TextFile(BaseFile):
     """ Supports plain text files.
     """

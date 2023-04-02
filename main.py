@@ -73,11 +73,11 @@ def process_command(comps):
         if ret == FileReturnCodes.SUCCESS:
             env.present_working_dir = valid_dir
         FileReturnCodes.print_message(ret, name=comps[1])
-    elif command == "mkdir":
+    elif command == "mk":
         ret = env.current_drive.make_file(
             env.present_working_dir, comps[1], FileType.DIR)
         FileReturnCodes.print_message(
-            ret, name=comps[1], success_msg="Created ")
+            ret, name=comps[1], success_msg="Created ", err_msg="Problem with your file extension:")
     elif command == "rm":
         dir_obj, ret = env.current_drive.get_file(
             env.present_working_dir, comps[1])

@@ -7,14 +7,10 @@ from file_return_codes import FileReturnCodes
 
 
 class FileType(Enum):
-    """ Types of files supported by this filesystem. 
-        TODO(maryamq): Switch to a decorator registration pattern if time. 
-        This is clunky. Ideally, we should be able to add new filetypes without modifying this file. 
-    """
     UNKNOWN = 0  # Unknown file.
-    DIR = 1  # Directory. Contains other files.
-    TEXT_FILE = 2   # File with text content
-
+    DIR = 1  # Directory. A type of file that contains other files.
+    TEXT_FILE = 2   # File with text content.
+    #BINARY_FILE = 3 Unsupported. Could be images, videos etc.
 
 class BaseFile(ABC):
     """ Base class for all File System objects. Everything stored in the in-mem FS should sub-class from this. """
