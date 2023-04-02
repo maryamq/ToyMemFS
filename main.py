@@ -7,6 +7,8 @@ import os
 from constants import Commands
 
 # Helper function to check if cmd line arguments are provided.
+
+
 def has_cmd_arg(command_line_arr: list[str]) -> bool:
     return len(command_line_arr) > 1 and command_line_arr[1]
 
@@ -36,7 +38,7 @@ def execute_commands_from_io():
     while True:
         try:
             line = input(env.prompt).strip().lower()
-            if not line or line ==  Commands.EXIT:
+            if not line or line == Commands.EXIT:
                 print("GoodBye!")
                 return
             comps = line.split(" ")

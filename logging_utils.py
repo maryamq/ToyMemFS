@@ -105,8 +105,6 @@ class DebugLogger:
     # Disables the logger. Set it to True in prod.
     disable = False
 
-
-
     @classmethod
     def get_logger_fn(cls, src_prefix: str):
         """ Returns an function to print debugging output.
