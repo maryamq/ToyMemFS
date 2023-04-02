@@ -5,6 +5,7 @@ from io import StringIO
 from base_file import FileType, BaseFile
 from directory import Directory
 from file_return_codes import FileReturnCodes
+import re
 
 
 class TextFile(BaseFile):
@@ -13,7 +14,7 @@ class TextFile(BaseFile):
 
     # Config args supported by this type.
     _default_config = {
-        "write_mode": "overwrite" # supported: overwrite | append
+        "write_mode": "overwrite"  # supported: overwrite | append
     }
 
     def __init__(self, name: str, parent: Directory):
@@ -23,7 +24,7 @@ class TextFile(BaseFile):
         parent: Directory that holds this file.
         """
         super().__init__(name, FileType.TEXT_FILE, parent)
-        self._content = StringIO()
+        self._content = StringIO() # For supporting efficient appends.
 
     def __iter__(self):
         self._content.flush()
@@ -44,20 +45,29 @@ class TextFile(BaseFile):
             # overwrite
             self._content.truncate(0)
             self._content.writelines(content)
-    
-    def move(self, new_parent:Directory):
+
+    def move(self, new_parent: Directory):
         if self.name in new_parent:
             return FileReturnCodes.ALREADY_EXIST
         self.parent.remove_child(self.name)
         new_parent.add_content(self)
         return FileReturnCodes.SUCCESS
 
-    def search(self, regex, **kwargs):
-        pass
+    def search(self, regex_str, **kwargs):
+        matcher = re.compile(regex_str)
+        return matcher.findall(self._content.getvalue())
 
-    def __str__(self)->str:
+    def __str__(self) -> str:
         return self._content.getvalue()
 
     def delete(self) -> int:
         self._content.close()
         super().delete()
+
+
+#TODO(maryamq): Testing. delete later.
+if __name__ == "__main__":
+    test_file = TextFile("test", parent=None)
+    test_file.add_content("Hello World")
+    print(test_file)
+    print("Searching: ", test_file.search("World"))

@@ -94,33 +94,50 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
         else:
             return FileReturnCodes.UNSUPPORTED
 
-    def search(self, working_dir: Directory, file_path, regex, **config):
-        selected_file, ret_selected = self.get_file(working_dir, file_path)
-        if ret_selected != FileReturnCodes.SUCCESS:
-            return ret_selected
-        return selected_file.search(regex, config)
+    def search(self, working_dir: Directory, file_path, regex):
+        if not file_path or file_path == ".":
+            selected_file = working_dir
+        else:
+            selected_file, ret_selected = self.get_file(working_dir, file_path)
+            if ret_selected != FileReturnCodes.SUCCESS:
+                return [], ret_selected
+
+        if selected_file.type != FileType.DIR:
+            return selected_file.search(regex), FileReturnCodes.SUCCESS
+        # Handle Dir search.
+        self._logger("Starting dir search : ", selected_file)
+        dir_matches = []
+        def action_fn(dir, _): return dir_matches.extend(dir.search(regex))
+        self.recurse_dir(selected_file, action_fn)
+        return dir_matches, FileReturnCodes.SUCCESS
 
     def list_all(self, base_dir: Directory, file_path=None):
         if file_path:
             raise NotImplementedError()
         return base_dir.list_all()
 
+    def recurse_dir(self, start_dir, action_fn):
+        queue = []
+        queue.append((start_dir, 0))
+        level = 0
+        # Basic bfs
+        while queue:
+            directory, level = queue.pop(0)
+            action_fn(directory, level)
+            for item in directory:
+                if item.type == FileType.DIR:
+                    queue.append((item, level+1))
+
     def __str__(self) -> str:
         """ Retruns a string representation of the file system. 
         Useful for debugging/logging.
         """
-        queue = []
-        queue.append((self._root, 0))
-        level = 0
         output = StringIO()
-        # Basic bfs
-        while queue:
-            directory, level = queue.pop(0)
-            output.write(directory.list_all(level=level))
-            output.write("\n")
-            for item in directory:
-                if item.type == FileType.DIR:
-                    queue.append((item, level+1))
+
+        def action_fn(dir, level): return output.write(
+            f"{dir.list_all(level=level)}\n")
+        self._logger("Action fn", action_fn(self._root, 0))
+        self.recurse_dir(self._root, action_fn)
         final_str = output.getvalue()
         output.close()  # free up buffer
         return final_str
@@ -145,3 +162,4 @@ if __name__ == "__main__":
     print(fs.move_file(fs.root, "hello.txt", "/movie/disney"))
     print(fs.move_file(fs.root, "/movie/disney", "/movie/paramount"))
     print(fs)
+    print("Search: ", fs.search(fs.root, "/", "dis"))

@@ -115,7 +115,17 @@ def process_command(comps):
             ret, name=comps[1], success_msg="Content For ")
         if ret == FileReturnCodes.SUCCESS:
             print(file)
-
+    elif command == "find":
+        file_to_search = comps[1]
+        search_term = " ".join(comps[2:])
+        print("Searching for terms: ", search_term)
+        search_results, ret = env.current_drive.search(
+            env.present_working_dir, file_to_search, search_term)
+        if ret == FileReturnCodes.SUCCESS:
+            print(f"Found {len(search_results)} entries")
+            print(search_results)
+        else:
+            FileReturnCodes.print_message(ret, name=comps[1])
     # ****************Commands for Managing a new FS.************n
     elif command == "new":
         if not has_cmd_arg(comps):

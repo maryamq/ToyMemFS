@@ -1,5 +1,6 @@
 from base_file import FileType, BaseFile
 from file_return_codes import FileReturnCodes
+import re
 
 
 class Directory(BaseFile):
@@ -50,20 +51,29 @@ class Directory(BaseFile):
         indent = indent + ("\t" * level)
         all_content_names = ", ".join(self.children_names())
         return f"{indent}{self.name}: [{all_content_names}]"
-    
-    def move(self, new_parent:BaseFile):
+
+    def move(self, new_parent: BaseFile):
         # A dir can only be moved to another dir.
         if not Directory.IsDirectory(new_parent):
             return FileReturnCodes.INVALID_PATH
-        # Check if the dir already exists. 
+        # Check if the dir already exists.
         if self.name in new_parent:
             return FileReturnCodes.ALREADY_EXIST
         self.parent.remove_child(self.name)
         new_parent.add_content(self)
         return FileReturnCodes.SUCCESS
-    
+
     def search(self, term, **config):
-        pass
+        # Todo(maryamq): Not the most efficient implementation. Fix it.
+        search_term_regex = re.compile(term)
+        absolute_path = self.absolute_path
+        if absolute_path == "/":  # syntactic.. to avoid //
+            absolute_path = ""
+        results = []
+        for file_name in self._children.keys():
+            if len(search_term_regex.findall(file_name)) > 0:
+                results.append(f"{absolute_path}/{file_name}")
+        return results
 
     def __str__(self) -> str:
         """ Returns the list of all files in this directory.
@@ -79,6 +89,7 @@ class Directory(BaseFile):
 if __name__ == "__main__":
     dir = Directory("/")
     dir.add_content(Directory("Hello"))
+    dir.add_content(Directory("H"))
     dir.add_content(Directory("World"))
     print(dir)
     print(dir.list_all(level=5))
@@ -89,3 +100,5 @@ if __name__ == "__main__":
     print("Checking for child with type : Should be false",
           dir.has_child("Hello", FileType.TEXT_FILE))
     print("Absolute path: ", dir.get_child("Hello").absolute_path)
+    print("Search: ", dir.search("H"))
+    print("Search: ", dir.search("^H$"))
