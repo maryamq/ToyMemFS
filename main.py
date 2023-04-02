@@ -4,7 +4,7 @@ from environment import Environment
 from logging_utils import CommandValidator
 from file_return_codes import FileReturnCodes
 import os
-
+from constants import Commands
 
 # Helper function to check if cmd line arguments are provided.
 def has_cmd_arg(command_line_arr: list[str]) -> bool:
@@ -36,7 +36,7 @@ def execute_commands_from_io():
     while True:
         try:
             line = input(env.prompt).strip().lower()
-            if not line or line == "exit":
+            if not line or line ==  Commands.EXIT:
                 print("GoodBye!")
                 return
             comps = line.split(" ")
@@ -54,7 +54,7 @@ def execute_commands_from_io():
 
 def process_command(comps):
     command = comps[0]
-    if command == "ls":
+    if command == Commands.LS:
         if has_cmd_arg(comps):
             dir_path = comps[1]
             dir_obj, ret = env.current_drive.get_dir(
@@ -65,37 +65,37 @@ def process_command(comps):
                 print(dir_obj)
         else:
             print(env.present_working_dir)
-    elif command == "pwd":
+    elif command == Commands.PWD:
         print(env.present_working_dir.absolute_path)
-    elif command == "cd":
+    elif command == Commands.CD:
         valid_dir, ret = env.current_drive.get_dir(
             env.present_working_dir, comps[1])
         if ret == FileReturnCodes.SUCCESS:
             env.present_working_dir = valid_dir
         FileReturnCodes.print_message(ret, name=comps[1])
-    elif command == "mk":
+    elif command == Commands.MK:
         ret = env.current_drive.make_file(
             env.present_working_dir, comps[1], FileType.DIR)
         FileReturnCodes.print_message(
             ret, name=comps[1], success_msg="Created ", err_msg="Problem with your file extension:")
-    elif command == "rm":
+    elif command == Commands.RM:
         dir_obj, ret = env.current_drive.get_file(
             env.present_working_dir, comps[1])
         if ret == FileReturnCodes.SUCCESS:
             dir_obj.delete()
         FileReturnCodes.print_message(
             ret, name=comps[1], success_msg="Deleted ")
-    elif command == "mkfile":
+    elif command == Commands.MK:
         ret = env.current_drive.make_file(
             env.present_working_dir, comps[1], FileType.TEXT_FILE)
         FileReturnCodes.print_message(
             ret, name=comps[1], success_msg="Created ")
-    elif command == "mvfile":
+    elif command == Commands.MVFILE:
         selected_file, future_dir = comps[1], comps[2]
         ret = env.current_drive.move_file(
             env.present_working_dir, selected_file, future_dir)
         FileReturnCodes.print_message(ret, name=comps[1], success_msg="Moved ")
-    elif command == "write":
+    elif command == Commands.WRITE:
         path = comps[1]
         mode = "overwrite"
         content_idx = 2
@@ -108,14 +108,14 @@ def process_command(comps):
         if ret == FileReturnCodes.SUCCESS:
             file.add_content(content, write_mode=mode)
         FileReturnCodes.print_message(ret, name=comps[1])
-    elif command == "cat":
+    elif command == Commands.CAT:
         file, ret = env.current_drive.get_file(
             env.present_working_dir, comps[1], type=FileType.TEXT_FILE)
         FileReturnCodes.print_message(
             ret, name=comps[1], success_msg="Content For ")
         if ret == FileReturnCodes.SUCCESS:
             print(file)
-    elif command == "find":
+    elif command == Commands.FIND:
         file_to_search = comps[1]
         search_term = " ".join(comps[2:])
         print("Searching for terms: ", search_term)
@@ -127,7 +127,7 @@ def process_command(comps):
         else:
             FileReturnCodes.print_message(ret, name=comps[1])
     # ****************Commands for Managing a new FS.************n
-    elif command == "new":
+    elif command == Commands.NEW:
         if not has_cmd_arg(comps):
             print("Missing drive name. Usage: new <drive_name>")
             return
@@ -138,25 +138,25 @@ def process_command(comps):
             return
         fs = MemFileSystem(comps[1])
         print(f"Creating a new in-memory drive: {fs.name}")
-    elif command == "drives":
+    elif command == Commands.DRIVES:
         print("List of all drives")
         for k in virtual_mem_drive_registry.registry.keys():
             print(k)
-    elif command == "mount":
+    elif command == Commands.MOUNT:
         if not has_cmd_arg(comps) or comps[1] not in virtual_mem_drive_registry.registry:
             print("Error! Please specify an existing drive name.")
             return
         current_drive = virtual_mem_drive_registry.registry[comps[1]]
         env.current_drive = current_drive
         print("Switched Drives: ", env.current_drive.name)
-    elif command == "load":
+    elif command == Commands.LOAD:
         print("Loading file: ", comps[1])
         execute_commands_from_file(comps[1])
-    elif command == "echo":
+    elif command == Commands.ECHO:
         print(" ".join(comps[1:]))
-    elif command == "sys":
+    elif command == Commands.SYS:
         print(env.current_drive)
-    elif command == "help":
+    elif command == Commands.HELP:
         cmd_name = comps[1] if len(comps) > 1 else None
         print(CommandValidator.help(cmd_name))
     else:
