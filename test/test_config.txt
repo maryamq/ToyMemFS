@@ -1,0 +1,16 @@
+echo Creating a directory structure.
+mkdir movies
+mkdir tv
+mkdir movies/paramount
+mkdir movies/disney
+mkdir movies/paramount/topgun
+echo Creating some files
+mkfile movies/paramount/topgun/tom_cruise.txt
+write movies/paramount/topgun/tom_cruise.txt details about the movie
+cat movies/paramount/topgun/tom_cruise.txt
+echo appending to a file
+write append movies/paramount/topgun/tom_cruise.txt some secrets
+cat movies/paramount/topgun/tom_cruise.txt
+echo testing a move
+mkfile movies/disney/tv_show.txt
+mv movies/disney/tv_show.txt  /tv

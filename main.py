@@ -3,16 +3,53 @@ from mem_fs import MemFileSystem, FileType
 from environment import Environment
 from logging_utils import CommandValidator
 from file_return_codes import FileReturnCodes
+import os
 
-
-def exit():
-    print("GoodBye!")
 
 # Helper function to check if cmd line arguments are provided.
-
-
 def has_cmd_arg(command_line_arr: list[str]) -> bool:
     return len(command_line_arr) > 1 and command_line_arr[1]
+
+
+def execute_commands_from_file(file_name):
+    """ Reads and executes commands from a file. Useful for testing.
+    Once the commands are executed, the control is passed back to the user.
+    """
+    all_commands = ""
+    with open(file_name) as f:
+        all_commands = f.readlines()
+    for line in all_commands:
+        comps = line.strip().lower().split(" ")
+        if not comps:
+            continue
+        valid_cmd_syntax, msg = CommandValidator.validate(comps)
+        if not valid_cmd_syntax:
+            print(f"Error executing line: {line}. {msg}")
+        else:
+            process_command(comps)
+    print(
+        f"Executed {len(all_commands)} commands. Type sys <enter> to view the structure. Starting user IO\n\n")
+
+
+def execute_commands_from_io():
+    """ This function handles user's input."""
+    while True:
+        try:
+            line = input(env.prompt).strip().lower()
+            if not line or line == "exit":
+                print("GoodBye!")
+                return
+            comps = line.split(" ")
+
+            # Catch Errors early.
+            valid_cmd_syntax, msg = CommandValidator.validate(comps)
+            if not valid_cmd_syntax:
+                print(comps)
+                print(f"Invalid Command: {msg}")
+                continue
+            process_command(comps)
+        except Exception as e:  # catching all exception here to avoid destroying state.
+            print(e)
 
 
 def process_command(comps):
@@ -95,13 +132,18 @@ def process_command(comps):
         print("List of all drives")
         for k in virtual_mem_drive_registry.registry.keys():
             print(k)
-    elif command == "load":
+    elif command == "mount":
         if not has_cmd_arg(comps) or comps[1] not in virtual_mem_drive_registry.registry:
             print("Error! Please specify an existing drive name.")
             return
         current_drive = virtual_mem_drive_registry.registry[comps[1]]
         env.current_drive = current_drive
         print("Switched Drives: ", env.current_drive.name)
+    elif command == "load":
+        print("Loading file: ", comps[1])
+        execute_commands_from_file(comps[1])
+    elif command == "echo":
+        print(" ".join(comps[1:]))
     elif command == "sys":
         print(env.current_drive)
     elif command == "help":
@@ -114,20 +156,4 @@ def process_command(comps):
 if __name__ == "__main__":
     env = Environment.get_default()
     print("Welcome to InMemFS. Type help to get started. Press Enter to exit.")
-    while True:
-        try:
-            line = input(env.prompt)
-            if not line:
-                exit()
-                break
-            comps = line.strip().lower().split(" ")
-
-            # Catch Errors early.
-            valid_cmd_syntax, msg = CommandValidator.validate(comps)
-            if not valid_cmd_syntax:
-                print(comps)
-                print(f"Invalid Command: {msg}")
-                continue
-            process_command(comps)
-        except Exception as e:  # catching all exception here to avoid destroying state.
-            print(e)
+    execute_commands_from_io()

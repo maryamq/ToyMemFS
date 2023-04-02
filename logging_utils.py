@@ -37,7 +37,7 @@ class CommandValidator:
         "ls": Command(name="ls", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=2)], description="Lists all files in the current or specified directory.", usage="ls <enter> or ls <path>"),
         "mkdir": Command(name="mkdir", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a new directory.", usage="mkdir <path>"),
         "mkfile": Command(name="mkfile", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a text file.", usage="mkfile <path>"),
-        "mvfile": Command(name="mvfile", validators_fns=[ArgValidators.get_min_max_fn(min_value=3, max_value=3)], description="Moves a file to a new directory.", usage="mv <old_path> <new_path>"), 
+        "mvfile": Command(name="mvfile", validators_fns=[ArgValidators.get_min_max_fn(min_value=3, max_value=3)], description="Moves a file to a new directory.", usage="mv <old_path> <new_path>"),
         "write": Command(name="write", validators_fns=[ArgValidators.get_min_max_fn(min_value=3, max_value=None)], description="Append or overwrite to an existing file.", usage="write <path> [-a] 'content'"),
         "cat": Command(name="cat", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Output file content.", usage="cat <path>"),
         "rm": Command(name="rm", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Removes a file or directory. Directories must be empty.", usage="rm <path>"),
@@ -45,6 +45,9 @@ class CommandValidator:
         "cd": Command(name="cd", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Change present working directory.", usage="cd <dir>"),
         "help": Command(name="help", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=2)], description="Get Help.", usage="help <enter> or help <command>"),
         "sys": Command(name="sys", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=1)], description="Prints out all files in the drive. ", usage="sys <enter>"),
+        "load": Command(name="load", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Execute commands from file for testing", usage="load <path>"),
+        "echo": Command(name="echo", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=None)], description="echo", usage="echo some text"),
+
     }
     _UNKNOWN_COMMAND = "Unknown Command. Type help for a complete list."
 

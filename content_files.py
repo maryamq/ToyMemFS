@@ -52,6 +52,9 @@ class TextFile(BaseFile):
         new_parent.add_content(self)
         return FileReturnCodes.SUCCESS
 
+    def search(self, regex, **kwargs):
+        pass
+
     def __str__(self)->str:
         return self._content.getvalue()
 
