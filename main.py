@@ -1,4 +1,3 @@
-import os
 import virtual_mem_drive_registry
 from mem_fs import MemFileSystem, FileType
 from environment import Environment
@@ -61,6 +60,10 @@ if __name__ == "__main__":
         elif command == "mkfile":
             ret = env.current_drive.make_file(env.present_working_dir, comps[1], FileType.TEXT_FILE)
             FileReturnCodes.print_message(ret, name=comps[1], success_msg="Created ")
+        elif command == "mvfile":
+            selected_file, future_dir = comps[1], comps[2]
+            ret = env.current_drive.move_file(env.present_working_dir,selected_file, future_dir)
+            FileReturnCodes.print_message(ret, name=comps[1], success_msg="Moved ")
         elif command == "write":
             path = comps[1]
             mode = "overwrite"

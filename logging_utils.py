@@ -4,51 +4,6 @@ from collections import namedtuple
 import sys
 
 
-class FileReturnCodes:
-    """ Helper for consistent error codes and messaging. 
-    This exists mostly to save keystrokes.
-    """
-
-    # Constants representing various file-related errors.
-    SUCCESS = 0
-    ALREADY_EXIST = 1
-    CREATION_SUCCESSFUL = 2
-    INVALID_PATH = 3
-    DELETE_FAILED = 4
-    UNSUPPORTED = 5
-
-    # Error templates.
-    _error_tmpl = {
-        SUCCESS: "{success_msg} {name}",
-        ALREADY_EXIST: "{err_msg}: Already Exists: {name}",
-        INVALID_PATH: "{err_msg}: Invalid path: {name} ",
-        DELETE_FAILED: "{err_msg}: Deletion Failed. {name}}",
-        UNSUPPORTED: "{err_msg}: UnSupported. {name}"
-    }
-
-    @classmethod
-    def _get_default_tmpl_param_names(cls):
-        """ Returns the defaults value for template params.
-        """
-        return {
-            "success_msg": "Success! ",
-            "err_msg": "Error! ",
-            "name": "",
-        }
-
-    @classmethod
-    def print_message(cls, return_code, **kwargs) -> str:
-        """ Generates an error message using the error code and kwargs.
-         Arguments:
-          return_code: int to represent a error code. 
-          kwargs: string key-value args to populate the error template.
-        """
-        dict_args = FileReturnCodes._get_default_tmpl_param_names()
-        dict_args.update(kwargs)
-        print(FileReturnCodes._error_tmpl[return_code].format(
-            **dict_args).strip())
-
-
 class ArgValidators:
     """ Utility class for validating arguments. 
     This can be extended to support additional validations.
@@ -82,6 +37,7 @@ class CommandValidator:
         "ls": Command(name="ls", validators_fns=[ArgValidators.get_min_max_fn(min_value=1, max_value=2)], description="Lists all files in the current or specified directory.", usage="ls <enter> or ls <path>"),
         "mkdir": Command(name="mkdir", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a new directory.", usage="mkdir <path>"),
         "mkfile": Command(name="mkfile", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Creates a text file.", usage="mkfile <path>"),
+        "mvfile": Command(name="mvfile", validators_fns=[ArgValidators.get_min_max_fn(min_value=3, max_value=3)], description="Moves a file to a new directory.", usage="mv <old_path> <new_path>"), 
         "write": Command(name="write", validators_fns=[ArgValidators.get_min_max_fn(min_value=3, max_value=None)], description="Append or overwrite to an existing file.", usage="write <path> [-a] 'content'"),
         "cat": Command(name="cat", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Output file content.", usage="cat <path>"),
         "rm": Command(name="rm", validators_fns=[ArgValidators.get_min_max_fn(min_value=2, max_value=2)], description="Removes a file or directory. Directories must be empty.", usage="rm <path>"),
@@ -162,4 +118,3 @@ if __name__ == "__main__":
     print(CommandValidator.help("ls"))
     log = DebugLogger.get_logger_fn("test")
     log("Logging")
-    FileReturnCodes.print_message(FileReturnCodes.SUCCESS, name="mar")

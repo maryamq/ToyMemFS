@@ -24,6 +24,17 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
     @property
     def name(self):
         return self._name
+    
+    def move_file(self, working_dir:Directory, current_path:str, future_dir_path:str)->int:
+        selected_file, ret_selected = self.get_file(working_dir, current_path, FileType.TEXT_FILE)
+        if ret_selected != FileReturnCodes.SUCCESS:
+            return ret_selected
+        
+        future_dir, ret_future_dir = self.get_dir(working_dir, future_dir_path)
+        if ret_selected != FileReturnCodes.SUCCESS:
+            return ret_future_dir
+        return selected_file.move(future_dir)
+
 
     def get_dir(self, working_dir: Directory, input_path: str) -> tuple[Directory, int]:
         base_dir, unmatched = self.get_valid_dir(working_dir, input_path)
@@ -124,3 +135,5 @@ if __name__ == "__main__":
     print(text_file, err_code)
     text_file.add_content("hello world")
     print(text_file)
+    print(fs.move_file(fs.root, "hello.txt", "/movie/disney"))
+    print(fs)

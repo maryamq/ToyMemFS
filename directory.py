@@ -1,5 +1,5 @@
 from base_file import FileType, BaseFile
-from logging_utils import FileReturnCodes
+from file_return_codes import FileReturnCodes
 
 
 class Directory(BaseFile):
@@ -50,6 +50,9 @@ class Directory(BaseFile):
         indent = indent + ("\t" * level)
         all_content_names = ", ".join(self.children_names())
         return f"{indent}{self.name}: [{all_content_names}]"
+    
+    def move(self, new_location):
+        raise NotImplementedError()
 
     def __str__(self) -> str:
         """ Returns the list of all files in this directory.
