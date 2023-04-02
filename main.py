@@ -7,15 +7,12 @@ import os
 from constants import Commands
 
 # Helper function to check if cmd line arguments are provided.
-
-
 def has_cmd_arg(command_line_arr: list[str]) -> bool:
     return len(command_line_arr) > 1 and command_line_arr[1]
 
 
 def execute_commands_from_file(file_name):
-    """ Reads and executes commands from a file. Useful for testing.
-    Once the commands are executed, the control is passed back to the user.
+    """ Reads and executes commands from a file. Useful for testing and iteration during dev.
     """
     all_commands = ""
     with open(file_name) as f:
@@ -26,7 +23,7 @@ def execute_commands_from_file(file_name):
             continue
         valid_cmd_syntax, msg = CommandValidator.validate(comps)
         if not valid_cmd_syntax:
-            print(f"Error executing line: {line}. {msg}")
+            print(f"Error executing line: {line}.")
         else:
             process_command(comps)
     print(
@@ -38,7 +35,7 @@ def execute_commands_from_io():
     while True:
         try:
             line = input(env.prompt).strip().lower()
-            if not line or line == Commands.EXIT:
+            if line == Commands.EXIT:
                 print("GoodBye!")
                 return
             comps = line.split(" ")
@@ -167,5 +164,5 @@ def process_command(comps):
 
 if __name__ == "__main__":
     env = Environment.get_default()
-    print("Welcome to InMemFS. Type help to get started. Press Enter to exit.")
+    print("Welcome to InMemFS. Type help to get started. Type 'exit' to exit.")
     execute_commands_from_io()

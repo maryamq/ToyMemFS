@@ -1,18 +1,28 @@
 
-## Key Design:
-### Virtual Drives:
+# Release Log
+## Core Features
+1. Change Working dir (cd)
+2. Get working dir (pwd)
+3. Create new dir (mk)
+4. Get Dir content (ls)
+5. Remove Dir (rm)
+6. Create new file (mk)
+7. Get File content (cat)
+8. Move file or dir (mv)
+9. Search for file
 
-### Supported Paths
+## Extensions:
+1. Virtual Drives: Create new drives, mount drives, list (new)
+2. Operations on path: absolute and relative. hello, /hello, ../hello are all valid
+3. Walk a subtree: Print entire drive, dir subtree, recursive search with regex
+4. Load a mem drive by executing commands from file on disk (new)
+5. Append to a file instead of overwrite.
+6. Remove a File or dir.
 
 
 
-
-## WorkLog
-05/31:
-- Path Utils (Done)
-- Some Basic Registration for virtual drives. 
-- An env class for managing state. 
-- A base class for all types of file objects.
+----
+Draft Notes.
 
 ## Initial Design:
 Base filesystem:

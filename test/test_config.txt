@@ -13,4 +13,4 @@ write append movies/paramount/topgun/tom_cruise.txt some secrets
 cat movies/paramount/topgun/tom_cruise.txt
 echo testing a move
 mk movies/disney/tv_show.txt
-mv movies/disney/tv_show.txt  /tv
+write movies/disney/tv_show.txt succession
