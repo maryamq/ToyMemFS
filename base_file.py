@@ -82,3 +82,7 @@ class BaseFile(ABC):
     @abstractmethod
     def move(self, new_parent):
         pass
+
+    @abstractmethod
+    def search(self, regex, **kwargs):
+        pass

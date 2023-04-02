@@ -24,17 +24,19 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
     @property
     def name(self):
         return self._name
-    
-    def move_file(self, working_dir:Directory, current_path:str, future_dir_path:str)->int:
+
+    def move_file(self, working_dir: Directory, current_path: str, future_dir_path: str) -> int:
+        """ Moves a file (text or dir) to a new directory.
+        Files names at the new location must be unique.
+        """
         selected_file, ret_selected = self.get_file(working_dir, current_path)
         if ret_selected != FileReturnCodes.SUCCESS:
             return ret_selected
-        
+
         future_dir, ret_future_dir = self.get_dir(working_dir, future_dir_path)
         if ret_selected != FileReturnCodes.SUCCESS:
             return ret_future_dir
         return selected_file.move(future_dir)
-
 
     def get_dir(self, working_dir: Directory, input_path: str) -> tuple[Directory, int]:
         base_dir, unmatched = self.get_valid_dir(working_dir, input_path)
@@ -77,7 +79,7 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
                 break
         return cur_dir, path_parts[parts_idx:]
 
-    def make_file(self, working_dir: Directory, new_dir_path: str, file_type:int) -> FileReturnCodes:
+    def make_file(self, working_dir: Directory, new_dir_path: str, file_type: int) -> FileReturnCodes:
         valid_base_dir, unmatched_dir = self.get_valid_dir(
             working_dir, new_dir_path)
         if len(unmatched_dir) != 1 or not unmatched_dir[0]:
@@ -92,7 +94,11 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
         else:
             return FileReturnCodes.UNSUPPORTED
 
-    
+    def search(self, working_dir: Directory, file_path, regex, **config):
+        selected_file, ret_selected = self.get_file(working_dir, file_path)
+        if ret_selected != FileReturnCodes.SUCCESS:
+            return ret_selected
+        return selected_file.search(regex, config)
 
     def list_all(self, base_dir: Directory, file_path=None):
         if file_path:

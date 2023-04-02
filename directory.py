@@ -61,6 +61,9 @@ class Directory(BaseFile):
         self.parent.remove_child(self.name)
         new_parent.add_content(self)
         return FileReturnCodes.SUCCESS
+    
+    def search(self, term, **config):
+        pass
 
     def __str__(self) -> str:
         """ Returns the list of all files in this directory.
