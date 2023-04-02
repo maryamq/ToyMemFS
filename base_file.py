@@ -78,3 +78,7 @@ class BaseFile(ABC):
     @abstractmethod
     def add_content(self, content, **kwargs):
         pass
+
+    @abstractmethod
+    def move(self, new_parent):
+        pass

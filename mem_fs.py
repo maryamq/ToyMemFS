@@ -26,7 +26,7 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
         return self._name
     
     def move_file(self, working_dir:Directory, current_path:str, future_dir_path:str)->int:
-        selected_file, ret_selected = self.get_file(working_dir, current_path, FileType.TEXT_FILE)
+        selected_file, ret_selected = self.get_file(working_dir, current_path)
         if ret_selected != FileReturnCodes.SUCCESS:
             return ret_selected
         
@@ -52,7 +52,7 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
                 return base_dir, FileReturnCodes.SUCCESS
             elif base_dir.has_child(unmatched[0]):
                 selected_file = base_dir.get_child(unmatched[0])
-                if type != FileType.UNKNOWN and selected_file.type == type:
+                if type == FileType.UNKNOWN or selected_file.type == type:
                     return selected_file, FileReturnCodes.SUCCESS
         return None, FileReturnCodes.INVALID_PATH
 
@@ -124,7 +124,6 @@ if __name__ == "__main__":
     fs = MemFileSystem("test")
     print(fs.make_file(fs.root, "hello", FileType.DIR))
     print(fs.make_file(fs.root, "movie",  FileType.DIR))
-    print(fs.make_file(fs.root, "tv",  FileType.DIR))
     print(fs.list_all(fs.root))
     print(fs.make_file(fs.root, "/movie/disney",  FileType.DIR))
     print(fs.make_file(fs.root, "/movie/paramount",  FileType.DIR))
@@ -135,5 +134,8 @@ if __name__ == "__main__":
     print(text_file, err_code)
     text_file.add_content("hello world")
     print(text_file)
+    print("Before moves")
+    print(fs)
     print(fs.move_file(fs.root, "hello.txt", "/movie/disney"))
+    print(fs.move_file(fs.root, "/movie/disney", "/movie/paramount"))
     print(fs)

@@ -51,8 +51,16 @@ class Directory(BaseFile):
         all_content_names = ", ".join(self.children_names())
         return f"{indent}{self.name}: [{all_content_names}]"
     
-    def move(self, new_location):
-        raise NotImplementedError()
+    def move(self, new_parent:BaseFile):
+        # A dir can only be moved to another dir.
+        if not Directory.IsDirectory(new_parent):
+            return FileReturnCodes.INVALID_PATH
+        # Check if the dir already exists. 
+        if self.name in new_parent:
+            return FileReturnCodes.ALREADY_EXIST
+        self.parent.remove_child(self.name)
+        new_parent.add_content(self)
+        return FileReturnCodes.SUCCESS
 
     def __str__(self) -> str:
         """ Returns the list of all files in this directory.
