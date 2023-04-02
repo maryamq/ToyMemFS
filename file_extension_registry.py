@@ -1,6 +1,7 @@
 
 from logging_utils import DebugLogger
 from file_return_codes import FileReturnCodes
+from base_file import BaseFile
 
 _extension_registry = {}
 _logger = DebugLogger.get_logger_fn("ExtRegistry")
@@ -10,7 +11,7 @@ def register_file_ext(ext: str):
     def reg_fn(class_initializer):
         if ext in _extension_registry:
             _logger(f"Warning: Overwriting {ext} with {class_initializer}")
-        # TODO(maryamq): Check for base class.
+        assert issubclass(type(class_initializer), type(BaseFile))
         _extension_registry[ext] = class_initializer
         _logger(f"Successfully Registered {class_initializer}")
         return class_initializer
