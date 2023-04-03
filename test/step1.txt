@@ -1,0 +1,7 @@
+echo ********** Step1: Creating and mounting virtual drives, load test data
+drives
+new test
+mount test
+drives
+load test/test_config.txt
+sys

@@ -1,0 +1,9 @@
+echo ********** Step2:  Move around directories *****
+cd /movies/paramount
+pwd
+cd ../..
+pwd
+cd /movies
+pwd
+ls
+ls disney

@@ -103,7 +103,7 @@ class DebugLogger:
     log_out = sys.stdout
 
     # Disables the logger. Set it to True in prod.
-    disable = False
+    enabled = True
 
     @classmethod
     def get_logger_fn(cls, src_prefix: str):
@@ -112,10 +112,8 @@ class DebugLogger:
         src_prefix: This string will be prefixed to all output to identify the source of the message.
         """
         prefix = f"{src_prefix}: "
-        print(cls.disable)
-
         def log_print(*args):
-            if not cls.disable and DebugLogger.log_out:
+            if cls.enabled and DebugLogger.log_out:
                 print(prefix, *args, file=DebugLogger.log_out)
         return log_print
 

@@ -1,6 +1,6 @@
 from directory import Directory
 from mem_fs import MemFileSystem
-
+from logging_utils import DebugLogger
 
 class Environment:
     """ A helper class to manage user state such as present working dir, current drive etc.
@@ -8,16 +8,18 @@ class Environment:
     """
     _DEFAULT_PROMPT = ">"
 
-    def __init__(self):
+    def __init__(self, enable_debug_logging=True):
         """ Initializes user's environment."""
+        DebugLogger.enabled = enable_debug_logging
         self._current_drive = None
         # TODO(maryamq): maybe this should belong to individual in-mem drive.
         self._pwd = None
+        self._logger = DebugLogger.get_logger_fn("Environment")
 
     @classmethod
-    def get_default(cls):
+    def get_default(cls, enable_debug_logging=True):
         """Creates a default environment."""
-        env = Environment()
+        env = Environment(enable_debug_logging)
         env.current_drive = MemFileSystem("Default")
         return env
 

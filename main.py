@@ -163,6 +163,7 @@ def process_command(comps):
 
 
 if __name__ == "__main__":
-    env = Environment.get_default()
+    env = Environment.get_default(enable_debug_logging=True)
+    
     print("Welcome to InMemFS. Type help to get started. Type 'exit' to exit.")
     execute_commands_from_io()

@@ -56,7 +56,7 @@ class Directory(BaseFile):
 
     def move(self, new_parent: BaseFile):
         # A dir can only be moved to another dir.
-        if not Directory.IsDirectory(new_parent):
+        if not Directory.IsDirectory(new_parent.type):
             return FileReturnCodes.INVALID_PATH
         # Check if the dir already exists.
         if self.name in new_parent:
