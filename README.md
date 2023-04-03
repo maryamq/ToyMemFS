@@ -102,7 +102,7 @@ ls
 ```
 cd /
 write movies/my_fav_movies.txt matrix
-write append movies/my_fav_movies.txt finding nemo
+write movies/my_fav_movies.txt -a finding nemo
 cat movies/my_fav_movies.txt
 cd movies
 write finding_nemo/nemo.txt we found nemo
