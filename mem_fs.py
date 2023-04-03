@@ -32,6 +32,10 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
         selected_file, ret_selected = self.get_file(working_dir, current_path)
         if ret_selected != FileReturnCodes.SUCCESS:
             return ret_selected
+        
+        # Cannot move root.
+        if selected_file == self.root:
+            return FileReturnCodes.UNSUPPORTED
 
         future_dir, ret_future_dir = self.get_dir(working_dir, future_dir_path)
         if ret_selected != FileReturnCodes.SUCCESS:

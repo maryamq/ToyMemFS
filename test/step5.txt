@@ -1,1 +1,5 @@
 echo ********** Step 5: Search for directories and files 
+cd /
+find . rocky
+cd /movies/mgm/rocky
+find . rocky

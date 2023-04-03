@@ -102,7 +102,8 @@ class DebugLogger:
     # Defaults to console. Can be changed to a file.
     log_out = sys.stdout
 
-    # Disables the logger. Set it to True in prod.
+    # Disables the logger at runtime. Set it to False in prod.
+    # TODO(maryamq): Fix logging at registration (ext and virtual drives - the code that runs at module load.)
     enabled = True
 
     @classmethod
@@ -113,7 +114,7 @@ class DebugLogger:
         """
         prefix = f"{src_prefix}: "
         def log_print(*args):
-            if cls.enabled and DebugLogger.log_out:
+            if DebugLogger.enabled and DebugLogger.log_out:
                 print(prefix, *args, file=DebugLogger.log_out)
         return log_print
 

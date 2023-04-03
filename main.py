@@ -11,7 +11,7 @@ def has_cmd_arg(command_line_arr: list[str]) -> bool:
     return len(command_line_arr) > 1 and command_line_arr[1]
 
 
-def execute_commands_from_file(file_name):
+def execute_commands_from_file(env, file_name):
     """ Reads and executes commands from a file. Useful for testing and iteration during dev.
     """
     all_commands = ""
@@ -25,12 +25,12 @@ def execute_commands_from_file(file_name):
         if not valid_cmd_syntax:
             print(f"Error executing line: {line}.")
         else:
-            process_command(comps)
+            process_command(env, comps)
     print(
         f"Executed {len(all_commands)} commands. Type sys <enter> to view the structure. Starting user IO\n\n")
 
 
-def execute_commands_from_io():
+def execute_commands_from_io(env):
     """ This function handles user's input."""
     while True:
         try:
@@ -46,12 +46,12 @@ def execute_commands_from_io():
                 print(comps)
                 print(f"Invalid Command: {msg}")
                 continue
-            process_command(comps)
+            process_command(env, comps)
         except Exception as e:  # catching all exception here to avoid destroying state.
             print(e)
 
 
-def process_command(comps):
+def process_command(env, comps):
     command = comps[0]
     if command == Commands.LS:
         if has_cmd_arg(comps):
@@ -80,10 +80,13 @@ def process_command(comps):
     elif command == Commands.RM:
         dir_obj, ret = env.current_drive.get_file(
             env.present_working_dir, comps[1])
-        if ret == FileReturnCodes.SUCCESS:
-            dir_obj.delete()
-        FileReturnCodes.print_message(
-            ret, name=comps[1], success_msg="Deleted ")
+        if dir_obj and dir_obj == env.current_drive.root:
+            print("Cannot delete root dir.")
+        else:
+            if ret == FileReturnCodes.SUCCESS:
+                dir_obj.delete()
+            FileReturnCodes.print_message(
+                ret, name=comps[1], success_msg="Deleted ")
     elif command == Commands.MK:
         ret = env.current_drive.make_file(
             env.present_working_dir, comps[1], FileType.TEXT_FILE)
@@ -150,7 +153,7 @@ def process_command(comps):
         print("Switched Drives: ", env.current_drive.name)
     elif command == Commands.LOAD:
         print("Loading file: ", comps[1])
-        execute_commands_from_file(comps[1])
+        execute_commands_from_file(env, comps[1])
     elif command == Commands.ECHO:
         print(" ".join(comps[1:]))
     elif command == Commands.SYS:
@@ -163,7 +166,6 @@ def process_command(comps):
 
 
 if __name__ == "__main__":
-    env = Environment.get_default(enable_debug_logging=True)
-    
+    env = Environment.get_default(enable_debug_logging=False)
     print("Welcome to InMemFS. Type help to get started. Type 'exit' to exit.")
-    execute_commands_from_io()
+    execute_commands_from_io(env)

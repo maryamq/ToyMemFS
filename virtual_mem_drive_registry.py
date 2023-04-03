@@ -1,3 +1,4 @@
+from logging_utils import DebugLogger
 # Global registry of all in-mem filesystems.
 registry = {}
 
@@ -7,8 +8,9 @@ class VirtualMemDriveRegistry(type):
         This enables multiple in-mem filesystems. 
         TODO(maryamq): Currently, there is no way to de-register a drive (P2).
     """
+    _logger = DebugLogger.get_logger_fn("VirtualMemDriveRegistry")
     def __call__(cls, *args, **kwargs):
         obj = type.__call__(cls, *args, **kwargs)
         registry[obj.name] = obj
-        print(f"Registered a new drive: {obj.name}")
+        VirtualMemDriveRegistry._logger(f"Registered a new drive: {obj.name}")
         return obj

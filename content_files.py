@@ -1,12 +1,10 @@
-""" Classes for supporting content files include text.
-"""
-
 from io import StringIO
 from base_file import FileType, BaseFile
 from directory import Directory
 from file_return_codes import FileReturnCodes
 from file_extension_registry import register_file_ext
 import re
+
 
 @register_file_ext(ext="txt")
 class TextFile(BaseFile):
@@ -25,7 +23,7 @@ class TextFile(BaseFile):
         parent: Directory that holds this file.
         """
         super().__init__(name, FileType.TEXT_FILE, parent)
-        self._content = StringIO() # For supporting efficient appends.
+        self._content = StringIO()  # For supporting efficient appends.
 
     def __iter__(self):
         self._content.flush()
@@ -66,7 +64,7 @@ class TextFile(BaseFile):
         super().delete()
 
 
-#TODO(maryamq): Testing. delete later.
+# TODO(maryamq): Testing. delete later.
 if __name__ == "__main__":
     test_file = TextFile("test", parent=None)
     test_file.add_content("Hello World")
