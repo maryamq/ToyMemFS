@@ -22,6 +22,7 @@ A library to create a simple in-memory filesystem in python with a command line 
 5. Append to a file instead of overwrite.
 6. Remove a File or dir.
 ## Setup:
+Note: Tested with Python 3.10.9
 ```
 python3 ToyMemFS/main.py
 ```
