@@ -8,6 +8,7 @@ from file_return_codes import FileReturnCodes
 import path_utils
 from file_extension_registry import file_creator_factory
 
+
 class MemFileSystem(metaclass=VirtualMemDriveRegistry):
     ROOT_DIR = "/"
 
@@ -32,7 +33,7 @@ class MemFileSystem(metaclass=VirtualMemDriveRegistry):
         selected_file, ret_selected = self.get_file(working_dir, current_path)
         if ret_selected != FileReturnCodes.SUCCESS:
             return ret_selected
-        
+
         # Cannot move root.
         if selected_file == self.root:
             return FileReturnCodes.UNSUPPORTED

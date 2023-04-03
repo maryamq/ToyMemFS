@@ -4,7 +4,7 @@ import re
 from file_extension_registry import register_file_ext
 
 
-@register_file_ext(ext="")
+@register_file_ext(ext="") # No extension = directory.
 class Directory(BaseFile):
     """ Represents a directory in the in memory filesystem.
     """
