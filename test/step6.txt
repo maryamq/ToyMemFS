@@ -1,5 +1,6 @@
 
 echo ********** Step 6: Move Files and directories
+sys
 echo "Move directory"
 cd /movies
 ls
@@ -16,3 +17,4 @@ mv tv_show.txt ../../tv
 cd /tv
 ls
 cat tv_show.txt
+sys

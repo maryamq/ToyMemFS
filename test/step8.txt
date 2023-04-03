@@ -10,3 +10,4 @@ mk temp.jpg
 echo mount the default drive.
 drives
 mount default
+sys

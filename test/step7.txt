@@ -1,4 +1,5 @@
 echo ********** Step 7: Delete files and directories
+sys
 cd /
 ls 
 echo "Deleting a non-empty directory should fail"
@@ -11,4 +12,4 @@ rm tv
 ls
 echo "Deleting root dir should fail"
 rm /
-
+sys
