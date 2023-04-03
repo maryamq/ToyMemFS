@@ -39,12 +39,9 @@ class TextFile(BaseFile):
         config = TextFile._default_config
         if kwargs:
             config.update(kwargs)
-        if config["write_mode"] == "append":
-            self._content.writelines(content)
-        else:
-            # overwrite
-            self._content.truncate(0)
-            self._content.writelines(content)
+        if config["write_mode"] != "append":
+            self._content.truncate(0) #overwrite.
+        self._content.writelines([content, "\n"])
 
     def move(self, new_parent: Directory):
         if self.name in new_parent:
