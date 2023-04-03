@@ -57,6 +57,7 @@ def execute_commands_from_io(env):
 
 def process_command(env, comps):
     command = comps[0]
+    # TODO(maryamq): use match..case to simplify.
     if command == Commands.LS:
         if has_cmd_arg(comps):
             dir_path = comps[1]
