@@ -1,0 +1,14 @@
+echo ********** Step 7: Delete files and directories
+cd /
+ls 
+echo "Deleting a non-empty directory should fail"
+rm tv
+echo "Delete files in /tv and try again"
+ls tv
+rm tv/tv_show.txt
+ls tv
+rm tv
+ls
+echo "Deleting root dir should fail"
+rm /
+

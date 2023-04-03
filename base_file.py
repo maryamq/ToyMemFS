@@ -50,12 +50,6 @@ class BaseFile(ABC):
     def parent(self, new_parent):
         self._parent = new_parent
 
-    def delete(self) -> int:
-        """ Deletes the file. """
-        if not self.parent:  # ROOT should not be deleted.
-            return FileReturnCodes.DELETE_FAILED
-        return self.parent.remove_child(self.name)
-
     @property
     def absolute_path(self):
         """ Helper function to generate the absolute path from root.."""
@@ -85,4 +79,8 @@ class BaseFile(ABC):
 
     @abstractmethod
     def search(self, regex, **kwargs):
+        pass
+
+    @abstractmethod
+    def delete(self) -> int:
         pass

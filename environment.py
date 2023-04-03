@@ -20,7 +20,7 @@ class Environment:
     def get_default(cls, enable_debug_logging=True):
         """Creates a default environment."""
         env = Environment(enable_debug_logging)
-        env.current_drive = MemFileSystem("Default")
+        env.current_drive = MemFileSystem("default")
         return env
 
     @property

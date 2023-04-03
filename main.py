@@ -6,7 +6,7 @@ from file_return_codes import FileReturnCodes
 import os
 from constants import Commands
 
-# Helper function to check if cmd line arguments are provided.
+
 def has_cmd_arg(command_line_arr: list[str]) -> bool:
     return len(command_line_arr) > 1 and command_line_arr[1]
 
@@ -18,13 +18,17 @@ def execute_commands_from_file(env, file_name):
     with open(file_name) as f:
         all_commands = f.readlines()
     for line in all_commands:
-        comps = line.strip().lower().split(" ")
+        line = line.strip()
+        if not line:
+            continue
+        comps = line.split(" ")
         if not comps:
             continue
         valid_cmd_syntax, msg = CommandValidator.validate(comps)
         if not valid_cmd_syntax:
             print(f"Error executing line: {line}.")
         else:
+            print(">>", line)
             process_command(env, comps)
     print(
         f"Executed {len(all_commands)} commands. Type sys <enter> to view the structure. Starting user IO\n\n")
@@ -34,7 +38,7 @@ def execute_commands_from_io(env):
     """ This function handles user's input."""
     while True:
         try:
-            line = input(env.prompt).strip().lower()
+            line = input(env.prompt).strip()
             if line == Commands.EXIT:
                 print("GoodBye!")
                 return
@@ -76,7 +80,7 @@ def process_command(env, comps):
         ret = env.current_drive.make_file(
             env.present_working_dir, comps[1], FileType.DIR)
         FileReturnCodes.print_message(
-            ret, name=comps[1], success_msg="Created ", err_msg="Problem with your file extension:")
+            ret, name=comps[1], success_msg="Created ", err_msg="Problem creating file. ")
     elif command == Commands.RM:
         dir_obj, ret = env.current_drive.get_file(
             env.present_working_dir, comps[1])
@@ -84,7 +88,7 @@ def process_command(env, comps):
             print("Cannot delete root dir.")
         else:
             if ret == FileReturnCodes.SUCCESS:
-                dir_obj.delete()
+                ret = dir_obj.delete()
             FileReturnCodes.print_message(
                 ret, name=comps[1], success_msg="Deleted ")
     elif command == Commands.MK:
@@ -120,7 +124,6 @@ def process_command(env, comps):
     elif command == Commands.FIND:
         file_to_search = comps[1]
         search_term = " ".join(comps[2:])
-        print("Searching for terms: ", search_term)
         search_results, ret = env.current_drive.search(
             env.present_working_dir, file_to_search, search_term)
         if ret == FileReturnCodes.SUCCESS:

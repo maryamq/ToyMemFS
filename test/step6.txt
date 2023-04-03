@@ -1,0 +1,18 @@
+
+echo ********** Step 6: Move Files and directories
+echo "Move directory"
+cd /movies
+ls
+mv finding_nemo disney
+ls 
+ls disney
+cat disney/finding_nemo/nemo.txt
+cd disney/finding_nemo
+pwd
+echo ******* Move tv_show.txt ****
+cd /movies/disney
+cat tv_show.txt
+mv tv_show.txt ../../tv
+cd /tv
+ls
+cat tv_show.txt

@@ -3,3 +3,7 @@ cd /
 find . rocky
 cd /movies/mgm/rocky
 find . rocky
+cd /
+find . mov
+echo Find all txt files in the system
+find / .*\.txt$

@@ -20,7 +20,7 @@ class FileReturnCodes:
         SUCCESS: "{success_msg} {name}",
         ALREADY_EXIST: "{err_msg}: Already Exists: {name}",
         INVALID_PATH: "{err_msg}: Invalid path: {name} ",
-        DELETE_FAILED: "{err_msg}: Deletion Failed. {name}}",
+        DELETE_FAILED: "{err_msg}: Deletion Failed. {name}",
         UNSUPPORTED: "{err_msg}: UnSupported. {name}"
     }
 

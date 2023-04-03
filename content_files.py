@@ -62,7 +62,9 @@ class TextFile(BaseFile):
 
     def delete(self) -> int:
         self._content.close()
-        super().delete()
+        if self.parent:
+            self.parent.remove_child(self.name)
+        return FileReturnCodes.SUCCESS
 
 
 # TODO(maryamq): Testing. delete later.

@@ -1,11 +1,11 @@
 echo ********** Step3: Create files and directories*****
+echo Creating directories.
 cd /movies
 mk mgm
 mk mgm/rocky
 cd mgm/
 ls
-sys
-echo "***** Write to some files *****
+echo Creating some text files
 cd /movies
 mk my_fav_movies.txt
 mk bad_movies.txt

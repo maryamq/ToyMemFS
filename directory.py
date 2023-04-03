@@ -16,7 +16,7 @@ class Directory(BaseFile):
     def __iter__(self):
         return iter(self._children.values())
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         return len(self._children) == 0
 
     def has_child(self, child: str, type=None) -> bool:
@@ -66,6 +66,13 @@ class Directory(BaseFile):
         new_parent.add_content(self)
         return FileReturnCodes.SUCCESS
 
+    def delete(self) -> int:
+        """ Deletes the file. """
+        if self.is_empty() and self.parent:
+            self.parent.remove_child(self.name)
+            return FileReturnCodes.SUCCESS
+        return FileReturnCodes.DELETE_FAILED
+
     def search(self, term, **config):
         # Todo(maryamq): Not the most efficient implementation. Fix it.
         search_term_regex = re.compile(term)
@@ -102,6 +109,11 @@ if __name__ == "__main__":
           dir.has_child("Hello", FileType.DIR))
     print("Checking for child with type : Should be false",
           dir.has_child("Hello", FileType.TEXT_FILE))
-    print("Absolute path: ", dir.get_child("Hello").absolute_path)
+    hello_dir = dir.get_child("Hello")
+    print("Absolute path: ", hello_dir.absolute_path)
     print("Search: ", dir.search("H"))
     print("Search: ", dir.search("^H$"))
+    hello_dir.add_content(Directory("Inside Hello"))
+    print(hello_dir.list_all())
+    print(hello_dir.delete())
+    print(hello_dir.list_all())

@@ -1,11 +1,8 @@
-echo ********** Step 4: Move files and directories
-cd /movies
-mv finding_nemo disney
-ls 
-cat disney/finding_nemo/nemo.txt
-echo ******* Move tv_show.txt ****
-cat disney/tv_show.txt
-mv disney/tv_show.txt /tv
-cd /tv
-ls
-cat tv_show.txt
+echo ********** Step 4: Write, append and view to  text files
+cd /
+write movies/my_fav_movies.txt matrix
+write append movies/my_fav_movies.txt finding nemo
+cat movies/my_fav_movies.txt
+cd movies
+write finding_nemo/nemo.txt we found nemo
+cat finding_nemo/nemo.txt
