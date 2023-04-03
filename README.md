@@ -1,4 +1,6 @@
 # ToyMemFS
+A library to create a simple in-memory filesystem in python with a command line interface.
+
 
 ## FeatureList
 ### Core Features
@@ -24,7 +26,7 @@
 python3 ToyMemFS/main.py
 ```
 
-Tip: The following steps can be executed directly from files.
+Tip: The setup steps can be executed directly from files.
 ```
 python3 ToyMemFS/main.py
 load test/step1.txt
