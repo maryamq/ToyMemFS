@@ -6,7 +6,8 @@ from file_extension_registry import register_file_ext
 
 @register_file_ext(ext="")
 class Directory(BaseFile):
-    """ Represents a directory in the in memory filesystem."""
+    """ Represents a directory in the in memory filesystem.
+    """
 
     def __init__(self, name, parent=None):
         super().__init__(name, FileType.DIR, parent)

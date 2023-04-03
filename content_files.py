@@ -1,3 +1,4 @@
+""" Content Files for In-MEM filesystem."""
 from io import StringIO
 from base_file import FileType, BaseFile
 from directory import Directory
@@ -8,7 +9,7 @@ import re
 
 @register_file_ext(ext="txt")
 class TextFile(BaseFile):
-    """ Supports plain text files.
+    """ Supports plain text files with txt extension.
     """
 
     # Config args supported by this type.

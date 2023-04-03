@@ -4,7 +4,7 @@ from logging_utils import DebugLogger
 
 class Environment:
     """ A helper class to manage user state such as present working dir, current drive etc.
-        Any user-related config objects (such as permission objects) should be kept here.
+        Any user or context related config objects (such as permission objects) should be kept here.
     """
     _DEFAULT_PROMPT = ">"
 

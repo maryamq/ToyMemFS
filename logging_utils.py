@@ -113,6 +113,7 @@ class DebugLogger:
         src_prefix: This string will be prefixed to all output to identify the source of the message.
         """
         prefix = f"{src_prefix}: "
+
         def log_print(*args):
             if DebugLogger.enabled and DebugLogger.log_out:
                 print(prefix, *args, file=DebugLogger.log_out)

@@ -13,7 +13,11 @@ class FileType(Enum):
     #BINARY_FILE = 3 Unsupported. Could be images, videos etc.
 
 class BaseFile(ABC):
-    """ Base class for all File System objects. Everything stored in the in-mem FS should sub-class from this. """
+    """ Base class for all File System objects. It provides a skeleton structure + some helper methods.
+     To create a file compatible with the InMemFS, 
+      - Subclass from this file.
+      - Register extension supported by your file. 
+    """
 
     def __init__(self, name: str, type: FileType, parent=None):
         """ Initialize a file object.
